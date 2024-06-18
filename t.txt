@@ -1,0 +1,3 @@
+onehot encoder -> categoriel
+standarscaler -> donnée num pour meme echele
+
