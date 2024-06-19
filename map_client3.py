@@ -85,21 +85,16 @@ def carte_to_htlm(json, pkl_dic):
 def val_api(date):
     request = f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Saint%20Quentin/{date}/{date}?unitGroup=metric&elements=datetime%2Cwindgust%2Cwindspeedmean&key=JPUDYABXYPJW583PUU43DB6U7&contentType=json'
     retour = requests.get(request).json()
+
     return retour['days'][0]['windgust']
-    
+
 
 if __name__ == "__main__":
     
     date = datetime.date.today()
-    # request = f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Saint%20Quentin/{date}/{date}?unitGroup=metric&elements=datetime%2Cwindgust%2Cwindspeedmean&key=JPUDYABXYPJW583PUU43DB6U7&contentType=json'
 
-    # retour = requests.get(request).json()
-    # # print(retour)
-    # windgust = retour['days'][0]['windgust']
-    # print(windgust)
-    # print(datetime.date.today())
-    
     windgust = val_api(date)
+
 
     pkl_dic = 'dic_client_3.pkl'
     df_json = read_json('data.json')
