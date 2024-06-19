@@ -2,6 +2,8 @@ import pandas as pd
 import folium
 import pickle as pk
 import branca.colormap as cm
+import requests
+import datetime
 
 
 
@@ -58,33 +60,49 @@ def prediction(df, pkl_path):
     return pd.concat([df, prediction, prediction_proba], axis=1)
     # return pd.concat([df, prediction], axis=1)
 
-def carte_to_htlm(json):
+def carte_to_htlm(json, pkl_dic):
     json = prediction(json, pkl_dic)
     map = folium.Map(zoom_start=12, location=[49.8476780339, 3.2866348474000002])
     colormap = cm.LinearColormap(colors=['green', 'red'], vmin=0, vmax=1)
-    
+    map.add_child(colormap)
     for i in range(len(json)):
         folium.Circle(
             location = [json.iloc[i]['latitude'], json.iloc[i]['longitude']],
             radius =  (json.iloc[i]['tronc_diam']/3.1415) * 0.1 + 1,
-            color = colormap(json.iloc[i]['prediction_proba_1']),
+            color = colormap(json.iloc[i]['prediction_proba_0']),
             fill = True,
             popup=f'<div style="width : 200px">Position de l\'arbre : {json.iloc[i]['latitude'], json.iloc[i]['longitude']}<br>'
                   f'Remarquable : {json.iloc[i]['remarquable']}<br>'
                   f'Stade de développement : {json.iloc[i]['fk_stadedev']}<br>'
                   f'Etat de l\'arbre : {json.iloc[i]['fk_arb_etat']}<br>'
                   f'Quartier : {json.iloc[i]['clc_quartier']}<br>'
-                  f'Secteur : {json.iloc[i]['clc_secteur']}</div>'
+                  f'Secteur : {json.iloc[i]['clc_secteur']}'
+                  f'Probabilité que l\'arbre soit à abattre : {format(json.iloc[i]['prediction_proba_0'],'.2f')}</div>'
             ).add_to(map)
     
     return map.save('map.html')    
 
-
+def val_api(date):
+    request = f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Saint%20Quentin/{date}/{date}?unitGroup=metric&elements=datetime%2Cwindgust%2Cwindspeedmean&key=JPUDYABXYPJW583PUU43DB6U7&contentType=json'
+    retour = requests.get(request).json()
+    return retour['days'][0]['windgust']
+    
 
 if __name__ == "__main__":
+    
+    date = datetime.date.today()
+    # request = f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Saint%20Quentin/{date}/{date}?unitGroup=metric&elements=datetime%2Cwindgust%2Cwindspeedmean&key=JPUDYABXYPJW583PUU43DB6U7&contentType=json'
+
+    # retour = requests.get(request).json()
+    # # print(retour)
+    # windgust = retour['days'][0]['windgust']
+    # print(windgust)
+    # print(datetime.date.today())
+    
+    windgust = val_api(date)
 
     pkl_dic = 'dic_client_3.pkl'
     df_json = read_json('data.json')
 
 
-    test = carte_to_htlm(df_json)
+    test = carte_to_htlm(df_json, pkl_dic)
