@@ -6,10 +6,6 @@ import requests
 import datetime
 import sys
 
-if len(sys.argv) > 1:
-    date = str(sys.argv[1])
-else:
-    date = datetime.date.today()
 
 def write_json(df, path):
     df.to_json(path)
@@ -138,14 +134,21 @@ def val_api(date):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        date = str(sys.argv[1])
+        pkl_dic = str(sys.argv[2])
+        df_json = read_json(str(sys.argv[3]))
+    else:
+        date = datetime.date.today()
+
     # 2010-02-28    
     # date = datetime.date.today()
 
     # windgust = val_api(date)
 
 
-    pkl_dic = 'dic_client_3.pkl'
-    df_json = read_json('data.json')
+    # pkl_dic = 'dic_client_3.pkl'
+    # df_json = read_json('data.json')
 
 
     test = carte_to_htlm(df_json, pkl_dic, date)
