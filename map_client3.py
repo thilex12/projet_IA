@@ -84,6 +84,8 @@ def proba_wind(windgust, data):
         data.loc[data["prediction_proba_0"] > 0.9, "proba_wind"]  = 1
     return data
 
+
+
 def carte_to_htlm(json, pkl_dic, date = datetime.date.today()):
     json = prediction(json, pkl_dic)
 
@@ -133,13 +135,6 @@ def carte_to_htlm(json, pkl_dic, date = datetime.date.today()):
     return map.save('map.html')    
 
 
-
-# m = folium.Map()
-
-# fg = folium.FeatureGroup(name="Icon collection", show=False).add_to(m)
-# folium.Marker(location=(0, 0)).add_to(fg)
-
-# folium.LayerControl().add_to(m)
 
 
 
