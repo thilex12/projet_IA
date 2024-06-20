@@ -33,6 +33,7 @@ def csv_to_json(csv_path, json_path):
 # "binaire":['remarquable']
 
 
+
 def prediction(df, pkl_path):
     dic = pk.load(open(pkl_path, 'rb'))
     
@@ -44,7 +45,6 @@ def prediction(df, pkl_path):
     hot_df = pd.DataFrame(dic['hot'].transform(df[dic["categorielle"]]), columns=dic['hot'].get_feature_names_out(dic['categorielle']))
     
     #Données binaire
-    
     #Remarquable ou non
     data_bin = df[dic['binaire']]
     data_bin.loc[data_bin["remarquable"] == "Oui", "remarquable"] = 1
@@ -62,26 +62,18 @@ def prediction(df, pkl_path):
 
     
     return pd.concat([df, prediction, prediction_proba], axis=1)
-    # return pd.concat([df, prediction], axis=1)
 
 
 
 def proba_wind(windgust, data):
     data["proba_wind"] = data["prediction_proba_0"]
-    if (windgust > 128):
-        data.loc[data["prediction_proba_0"] > 0.3, "proba_wind"] = 1
-    elif (windgust > 117):
-        data.loc[data["prediction_proba_0"] > 0.4, "proba_wind"]  = 1
-    elif (windgust > 102):
-        data.loc[data["prediction_proba_0"] > 0.5, "proba_wind"]  = 1
-    elif (windgust > 88):
-        data.loc[data["prediction_proba_0"] > 0.6, "proba_wind"]  = 1
-    elif (windgust > 74):
-        data.loc[data["prediction_proba_0"] > 0.7, "proba_wind"]  = 1
-    elif (windgust > 61):
-        data.loc[data["prediction_proba_0"] > 0.8, "proba_wind"]  = 1
-    elif (windgust > 49):
-        data.loc[data["prediction_proba_0"] > 0.9, "proba_wind"]  = 1
+    lst_gust = [128,117,102,88,74,61,49]
+    proba = [0.3,0.4,0.5,0.6,0.7,0.8,0.9]
+
+    for i in range(len(lst_gust)):
+        if windgust > lst_gust[i]:
+            data.loc[data["prediction_proba_0"] > proba[i], "proba_wind"] = 1
+            break
     return data
 
 
@@ -136,14 +128,13 @@ def carte_to_htlm(json, pkl_dic, date = datetime.date.today()):
 
 
 
-
-
 def val_api(date):
     request = f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Saint%20Quentin/{date}/{date}?unitGroup=metric&elements=datetime%2Cwindgust%2Cwindspeedmean&key=JPUDYABXYPJW583PUU43DB6U7&contentType=json'
     # request = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Saint%20Quentin/2010-02-28/2010-02-28?unitGroup=metric&elements=datetime%2Cwindgust%2Cwindspeedmean&key=JPUDYABXYPJW583PUU43DB6U7&contentType=json'
     retour = requests.get(request).json()
 
     return retour['days'][0]['windgust']
+
 
 
 if __name__ == "__main__":
