@@ -31,6 +31,15 @@ def csv_to_json(csv_path, json_path):
 
 
 def prediction(df, pkl_path):
+    """Prédictions des arbres qui seront abattu d'apres le modele passe par pickle
+
+    Args:
+        df (DataFrame panda): dataframe des arbres
+        pkl_path (str): path du fichier pickle
+
+    Returns:
+        DataFrame pandas: base de donéne avec les predictions
+    """
     dic = pk.load(open(pkl_path, 'rb'))
     
     #Données numérique
@@ -49,7 +58,6 @@ def prediction(df, pkl_path):
     
     X = pd.concat([data_num_scaled, hot_df, data_bin], axis=1)
     
-    # X = df.drop("fk_arb_etat", axis=1)
     X = X[dic['features']]
     
     prediction = pd.DataFrame(dic['model'].predict(X), columns=["prediction"])
