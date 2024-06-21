@@ -1,7 +1,19 @@
 # projet_IA Client 3
 Projet IA A3
 
-# Faire attention d'etre dans le dossier du client 3 pour lancer le script et qu'il puisse lire les fichiers
+# Notebook
+Le modele sauvegarder en .pkl est le model du "model_client_3_bestmodel.ipynb"
+
+Les autres modele utilisé sont dans le "client_3_autre_model.ipynb"
+
+La version du modele avec un apprentissage sur des données reduite (essouche / non essouche) dans le "model_client_3_base_reduite.ipynb"
+
+
+
+
+
+# Scirpt
+##  Faire attention d'etre dans le dossier du client 3 pour lancer le script et qu'il puisse lire les fichiers
 
 ## Lancement script python pour la carte:
 Avoir les librairies : pandas, folium, pickle, branca, requests, datetime, sys
